@@ -63,9 +63,14 @@ on:
         required: false
         default: "deb"
       user_agent:
-        description: "Customize the browser user agent. Default is empty."
+        description: "Customize the browser user agent."
         required: false
         type: string
+      debug:
+        description: "Enable developer tools."
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -158,6 +163,11 @@ jobs:
           if [ -n "${{ inputs.user_agent }}" ]; then
             ARGS+=("--user-agent" "${{ inputs.user_agent }}")
           fi
+          
+          # 新增：处理 debug 参数
+          if [ "${{ inputs.debug }}" == "true" ]; then
+            ARGS+=("--debug")
+          fi
 
           echo "Running: node dist/cli.js ${ARGS[@]}"
           node dist/cli.js "${ARGS[@]}"
@@ -204,6 +214,11 @@ jobs:
           # 新增：处理 user-agent 参数
           if ("${{ inputs.user_agent }}" -ne "") {
             $args += "--user-agent", "${{ inputs.user_agent }}"
+          }
+
+          # 新增：处理 debug 参数
+          if ("${{ inputs.debug }}" -eq "true") {
+            $args += "--debug"
           }
 
           Write-Host "Running: node dist/cli.js $($args -join ' ')"
