@@ -62,6 +62,10 @@ on:
         description: "Package formats (comma-separated: deb,appimage,rpm,zst)"
         required: false
         default: "deb"
+      user_agent:
+        description: "Customize the browser user agent. Default is empty."
+        required: false
+        type: string
 
 jobs:
   build:
@@ -150,6 +154,11 @@ jobs:
             ARGS+=("--targets" "${{ inputs.targets }}")
           fi
 
+          # 新增：处理 user-agent 参数
+          if [ -n "${{ inputs.user_agent }}" ]; then
+            ARGS+=("--user-agent" "${{ inputs.user_agent }}")
+          fi
+
           echo "Running: node dist/cli.js ${ARGS[@]}"
           node dist/cli.js "${ARGS[@]}"
 
@@ -190,6 +199,11 @@ jobs:
 
           if ("${{ inputs.hide_title_bar }}" -eq "true") {
             $args += "--hide-title-bar"
+          }
+
+          # 新增：处理 user-agent 参数
+          if ("${{ inputs.user_agent }}" -ne "") {
+            $args += "--user-agent", "${{ inputs.user_agent }}"
           }
 
           Write-Host "Running: node dist/cli.js $($args -join ' ')"
