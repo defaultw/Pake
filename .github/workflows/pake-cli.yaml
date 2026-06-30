@@ -71,6 +71,11 @@ on:
         required: false
         type: boolean
         default: false
+      dark_mode:
+        description: "dark mode"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -169,6 +174,11 @@ jobs:
             ARGS+=("--debug")
           fi
 
+          # 新增：处理 dark-mode 参数
+          if [ "${{ inputs.dark_mode }}" == "true" ]; then
+            ARGS+=("--dark-mode")
+          fi
+
           echo "Running: node dist/cli.js ${ARGS[@]}"
           node dist/cli.js "${ARGS[@]}"
 
@@ -219,6 +229,11 @@ jobs:
           # 新增：处理 debug 参数
           if ("${{ inputs.debug }}" -eq "true") {
             $args += "--debug"
+          }
+
+          # 新增：处理 dark-mode 参数
+          if ("${{ inputs.dark_mode }}" -eq "true") {
+            $args += "--dark-mode"
           }
 
           Write-Host "Running: node dist/cli.js $($args -join ' ')"
